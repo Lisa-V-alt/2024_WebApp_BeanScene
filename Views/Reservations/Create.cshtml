@@ -1,0 +1,159 @@
+﻿@model BeanScene.Models.Reservation
+
+@{
+    ViewData["Title"] = "Create";
+    var isMember = User.IsInRole("Member");
+}
+
+<h1>Create</h1>
+
+<h4>Reservation</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="UserId" class="control-label"></label>
+                <select asp-for="UserId" class="form-control" asp-items="@(ViewData["UserId"] as List<SelectListItem>)"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="SittingId" class="control-label"></label>
+                <select asp-for="SittingId" class="form-control" asp-items="@(ViewData["SittingId"] as List<SelectListItem>)"></select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Table</label>
+                <div>
+                    <div class="form-group">
+                        <label>Balcony</label>
+                        @foreach (var table in (List<SelectListItem>)ViewData["Tables"])
+                        {
+                            if (table.Text.StartsWith("B"))
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" asp-for="TableId" value="@table.Value" />
+                                    <label class="form-check-label">@table.Text</label>
+                                </div>
+                            }
+                        }
+                    </div>
+                    <div class="form-group">
+                        <label>Main</label>
+                        @foreach (var table in (List<SelectListItem>)ViewData["Tables"])
+                        {
+                            if (table.Text.StartsWith("M"))
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" asp-for="TableId" value="@table.Value" />
+                                    <label class="form-check-label">@table.Text</label>
+                                </div>
+                            }
+                        }
+                    </div>
+                    <div class="form-group">
+                        <label>Outside</label>
+                        @foreach (var table in (List<SelectListItem>)ViewData["Tables"])
+                        {
+                            if (table.Text.StartsWith("O"))
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" asp-for="TableId" value="@table.Value" />
+                                    <label class="form-check-label">@table.Text</label>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="NumOfGuests" class="control-label"></label>
+                <input asp-for="NumOfGuests" class="form-control" />
+                <span asp-validation-for="NumOfGuests" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Duration" class="control-label"></label>
+                <input asp-for="Duration" class="form-control" type="number" min="1" max="3" step="1" />
+                <span asp-validation-for="Duration" class="text-danger"></span>
+            </div>
+            @if (!isMember)
+            {
+            <div class="form-group">
+                <label asp-for="Source" class="control-label"></label>
+                <select asp-for="Source" class="form-control">
+                    <option value="">Select Source</option>
+                    @foreach (var src in Enum.GetValues(typeof(source)))
+                    {
+                        <option value="@src">@src</option>
+                    }
+                </select>
+                <span asp-validation-for="Source" class="text-danger"></span>
+                </div>
+            }
+            else
+            {
+                <input type="hidden" asp-for="Source" value="Online" />
+            }
+            @if (!isMember)
+            {
+                <div class="form-group">
+                    <label asp-for="ResStatus" class="control-label"></label>
+                    <select asp-for="ResStatus" class="form-control">
+                        <option value="">Reservation Status</option>
+                        @foreach (var stat in Enum.GetValues(typeof(resstatus)))
+                        {
+                            <option value="@stat">@stat</option>
+                        }
+                    </select>
+                    <span asp-validation-for="ResStatus" class="text-danger"></span>
+                </div>
+            }
+            else
+            {
+            <input type="hidden" asp-for="ResStatus" value="Pending" />
+            }
+            <div class="form-group">
+                <label asp-for="SpecialReqs" class="control-label"></label>
+                <input asp-for="SpecialReqs" class="form-control" />
+                <span asp-validation-for="SpecialReqs" class="text-danger"></span>
+            </div>
+            @if (isMember)
+            {
+                <p class="text-primary">NOTE: Members cannot edit their reservation after it has been created.</p>
+                <p class="text-primary">Please double-check if your reservation details are correct.</p>
+            }
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Add an event listener to the input field for Duration
+        document.getElementById('Duration').addEventListener('input', function () {
+            var durationInput = document.getElementById('Duration');
+            var duration = parseInt(durationInput.value);
+
+            // Validate the input against the specified range (1 to 3 hours)
+            if (duration < 1 || duration > 3) {
+                durationInput.setCustomValidity('Duration must be between 1 and 3 hours.');
+            } else {
+                durationInput.setCustomValidity('');
+            }
+        });
+    </script>
+}

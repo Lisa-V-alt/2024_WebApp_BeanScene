@@ -1,0 +1,75 @@
+﻿@model IEnumerable<BeanScene.Models.User>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Guest Information & Membership</h1>
+
+<form asp-action="Index" method="get">
+    <div class="form-group">
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Search by User Name" />
+        <button type="submit" class="btn btn-primary">Search</button>
+        <button type="button" class="btn btn-secondary" onclick="clearSearch()">Cancel</button>
+    </div>
+</form>
+
+<p>
+    <i class="bi bi-plus-square"></i> <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Membership)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Membership)
+            </td>
+            <td>
+                    <a asp-action="Edit" asp-route-id="@item.UserId">Edit <i class="bi bi-pencil-square"></i></a>
+                    <a asp-action="Details" asp-route-id="@item.UserId">Info  <i class="bi bi-info-square"></i></a>
+                    <a asp-action="Delete" asp-route-id="@item.UserId">Delete <i class="bi bi-trash3"></i></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts {
+    <script type="text/javascript">
+        function clearSearch() {
+            // Reload the current page
+            window.location.href = window.location.pathname;
+        }
+    </script>
+}

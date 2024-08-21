@@ -1,0 +1,31 @@
+﻿@model UserRoleViewModel
+@using Microsoft.AspNetCore.Identity
+
+@{
+    ViewData["Title"] = "Edit User Roles";
+}
+
+<h2>Edit User Roles</h2>
+
+<form asp-action="Edit" asp-controller="UserRoleViewModels" method="post">
+    <div class="form-group">
+        <input type="hidden" asp-for="UserId" />
+
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" readonly />
+    </div>
+    <div class="form-group">
+        <label>Roles</label>
+        <select name="selectedRoles" class="form-control" multiple>
+            @foreach (var role in ViewBag.AllRoles as IEnumerable<IdentityRole>)
+            {
+                <option value="@role.Name" selected="@Model.Roles.Contains(role.Name)">@role.Name</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

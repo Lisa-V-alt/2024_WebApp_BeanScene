@@ -1,0 +1,34 @@
+﻿@model IEnumerable<BeanScene.Models.UserRoleViewModel>
+
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<h2>User Management</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>
+                    @foreach (var role in user.Roles)
+                    {
+                        <span class="badge bg-primary">@role</span>
+                    }
+                </td>
+                <td>
+                    <a href="@Url.Action("Edit", "UserRoleViewModels", new { id = user.UserId })" class="btn btn-sm btn-warning">Edit Roles</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

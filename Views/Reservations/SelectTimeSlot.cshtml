@@ -1,0 +1,37 @@
+﻿@model BeanScene.Models.Reservation
+
+@{
+    ViewData["Title"] = "Select Time Slot";
+}
+
+<h1>Select Time Slot</h1>
+@if (((List<DateTime>)ViewData["AvailableTimeSlots"]).Count == 0)
+{
+    <div class="alert alert-danger" role="alert">
+        Sorry, all tables have been booked for this slot. Please select a different time.
+    </div>
+}
+else
+{
+<form asp-action="ConfirmReservation" method="post">
+    <div class="form-group">
+        <label asp-for="ResStartTime" class="control-label">Select Start Time:</label>
+        <select asp-for="ResStartTime" class="form-control">
+            @foreach (var timeSlot in (List<DateTime>)ViewData["AvailableTimeSlots"])
+            {
+                <option value="@timeSlot">@timeSlot.ToString("hh:mm tt")</option>
+            }
+        </select>
+    </div>
+    <input type="hidden" asp-for="SittingId" />
+    <input type="hidden" asp-for="TableId" />
+    <input type="hidden" asp-for="UserId" />
+    <input type="hidden" asp-for="ResStatus" />
+    <input type="hidden" asp-for="NumOfGuests" />
+    <input type="hidden" asp-for="Duration" />
+    <input type="hidden" asp-for="Source" />
+    <input type="hidden" asp-for="SpecialReqs" />
+    <input type="submit" value="Confirm Reservation" class="btn btn-primary" />
+
+</form>
+}

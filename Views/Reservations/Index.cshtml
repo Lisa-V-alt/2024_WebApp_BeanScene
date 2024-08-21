@@ -1,0 +1,156 @@
+﻿@model IEnumerable<BeanScene.Models.Reservation>
+@{
+    ViewData["Title"] = "Index";
+    var currentSort = ViewData["DateSortParm"] as string;
+    var statusSort = ViewData["StatusSortParm"] as string;
+    var tableSort = ViewData["TableSortParm"] as string;
+}
+<h1>Reservations</h1>
+<form asp-action="Index" method="get">
+    <div class="form-group">
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Search by Table or Guest Name" />
+        <button type="submit" class="btn btn-primary">Search</button>
+        <button type="button" class="btn btn-secondary" onclick="clearSearch()">Cancel</button>
+    </div>
+</form>
+<p>@if (User.IsInRole("Manager") || User.IsInRole("Staff") || User.IsInRole("Member"))
+{
+        <i class="bi bi-plus-square"></i>
+
+        <a asp-action="Create">Create New</a>
+}
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">
+                    @Html.DisplayNameFor(model => model.Date)
+                    @if (currentSort == "date_desc")
+                    {
+                        <span>&#9650;</span>
+                    }
+                    else
+                    {
+                        <span>&#9660;</span>
+                    }
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-statusSort="@ViewData["StatusSortParm"]">
+                    @Html.DisplayNameFor(model => model.ResStatus)
+                    @if (statusSort == "Status")
+                    {
+                        <span>&#9650;</span>
+                    }
+                    else
+                    {
+                        <span>&#9660;</span>
+                    }
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-tableSort="@ViewData["TableSortParm"]">
+                    @Html.DisplayNameFor(model => model.FKTable.TableName)
+                    @if (tableSort == "Table")
+                    {
+                        <span>&#9650;</span>
+                    }
+                    else
+                    {
+                        <span>&#9660;</span>
+                    }
+                </a>
+            </th>
+            <th>User Id & Full Name</th>
+            <th>Contact Details</th>
+            <th>Membership</th>
+            <th>Sitting</th>
+            <th>Start Time</th>
+            <th>Duration (In Hours)</th>
+            <th>Guests</th>
+            <th>@Html.DisplayNameFor(model => model.Source)</th>
+            <th>@Html.DisplayNameFor(model => model.SpecialReqs)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ResStatus)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FKTable.TableName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FKUser.UserId) -
+                    @Html.DisplayFor(modelItem => item.FKUser.FirstName)
+                    @Html.DisplayFor(modelItem => item.FKUser.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FKUser.Email)
+                    @Html.DisplayFor(modelItem => item.FKUser.Phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FKUser.Membership)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FKSitting.SittingType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modeItem => item.ResStartTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Duration)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumOfGuests)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Source)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SpecialReqs)
+                </td>          
+             <td>
+                    @if (User.IsInRole("Manager") || User.IsInRole("Staff"))
+                    {<div>
+                            <a asp-action="Edit" asp-route-id="@item.ResId">Edit <i class="bi bi-pencil-square"></i></a>
+                        </div>
+                    }
+                    @if (User.IsInRole("Manager") || User.IsInRole("Staff"))
+                    {<div>
+                            <a asp-action="Details" asp-route-id="@item.ResId">Info <i class="bi bi-info-square"></i></a>
+                        </div>
+                    }
+                    @if (User.IsInRole("Manager") || User.IsInRole("Staff"))
+                    {
+                        <div>
+                            <a asp-action="Delete" asp-route-id="@item.ResId">Delete <i class="bi bi-trash3"></i></a>
+                        </div>
+                    }
+                </td>
+                @if (User.IsInRole("Member"))
+                {
+                    <div>
+                        <p class="text-primary">Please urgently contact the BeanScene staff if you wish to edit any reservation details.</p>
+                    </div>
+                }
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts {
+    <script type="text/javascript">
+        function clearSearch() {
+            // Reload the current page
+            window.location.href = window.location.pathname;
+        }
+    </script>
+}
